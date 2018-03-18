@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Game;
 
 import java.util.ArrayList;
@@ -12,6 +7,7 @@ import model.*;
 import org.boof.ListItemInput;
 import org.boof.UI;
 import org.boof.Output;
+
 public class Player {
 
     private int wins;
@@ -45,7 +41,7 @@ public class Player {
     }
 
     public boolean busted() {
-        if (getHandValue() > 21) {
+        if (this.getHandValue() > 21) {
             return true;
         }
         return false;
@@ -53,18 +49,19 @@ public class Player {
 
     public int getHandValue() {
         boolean ace = false;
+        points = 0;
         for (int i = 0; i < this.hand.size(); i++) {
             if (this.hand.get(i).getRank().value > 10) {
                 points += 10;
             } else if (this.hand.get(i).getRank().value == 1) {
                 ace = true;
-            } else {
+                points +=1;
+            }else {
                 points += this.hand.get(i).getRank().value;
             }
-            if (ace == true && points + 11 <= 21) {
-                points += 11;
-            }
-
+        }
+        if (ace && points + 10 <= 21) {
+            points += 10;
         }
         return points;
     }
@@ -76,35 +73,34 @@ public class Player {
 
     public void play(Deck deck) {
         boolean isDone = false;
-        if (this.getHandValue() > 21){
-            System.out.println("You have busted!");
-            isDone = true;
-            this.lose();
-        }
-        takeCard(deck.drawCard());
-        takeCard(deck.drawCard());
         System.out.println("Here are your cards and your score:");
         System.out.println(this.hand.toString());
         System.out.println("Score: " + getHandValue());
         ListItemInput hitOrPass = new ListItemInput();
+        hitOrPass.setPrompt("Hit or pass?");
         hitOrPass.add("h", "hit");
         hitOrPass.add("p", "pass");
         while (!isDone){
-            System.out.println("Hit or pass?");
             hitOrPass.run();
             if (hitOrPass.getKey().equalsIgnoreCase("h")) {
-                String result = "";
-                this.takeCard(deck.drawCard());
-                result += "You hand is now " + this.hand.toString() + "\n";
-                result += "Your score is now " + this.getHandValue();
-                System.out.println(result);
-            } else {
-                System.out.println("You have chosen to pass.");
+                    String result = "";
+                    this.takeCard(deck.drawCard());
+                    result += "You hand is now " + this.hand.toString() + "\n";
+                    result += "Your score is now " + this.getHandValue();
+                    System.out.println(result);
+                } else {
+                    System.out.println("You have chosen to pass.");
+                    isDone = true;
+                }
+            if (this.getHandValue() > 21){
+                System.out.println("You have busted!");
                 isDone = true;
+                this.lose();
+                }
             }
         }
-    }
- 
+
+
     public int numWins() {
         return this.wins;
     }
@@ -115,5 +111,12 @@ public class Player {
 
     public int numScore() {
         return this.score;
+    }
+    public void peek(){
+        System.out.println();
+        System.out.println("---------------------------------------------------------------");
+        System.out.println("The first card in their hand is " + this.hand.get(0).toString());
+        System.out.println("---------------------------------------------------------------");
+        System.out.println();
     }
 }
