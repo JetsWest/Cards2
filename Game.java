@@ -15,7 +15,6 @@ public class Game {
     private Deck deck;
     private static ArrayList<Player> players;
     private Scanner sc = new Scanner(System.in);
-    boolean playing = true;
 
     public Game(){
         this.deck = new Deck();
@@ -39,6 +38,7 @@ public class Game {
         wantToPlay.setPrompt("Want to continue?");
         wantToPlay.add("y", "Yes");
         wantToPlay.add("n", "No");
+        boolean playing = true;
         numHumanPlayers.run();
         numComputerPlayers.run();
         for (int i = 0; i < (int)numHumanPlayers.get(); i++){
