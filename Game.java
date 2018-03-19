@@ -15,7 +15,7 @@ public class Game {
     private Deck deck;
     private static ArrayList<Player> players;
     private Scanner sc = new Scanner(System.in);
-
+    boolean replay = true;
     public Game(){
         this.deck = new Deck();
         this.deck.shuffle();
@@ -32,7 +32,7 @@ public class Game {
         NumberInput numComputerPlayers = new NumberInput();
         numComputerPlayers.setPrompt("How many computer players do you want?");
         numComputerPlayers.setNumberType("Integer");
-
+       
         System.out.println("Welcome to the 21 game!");
         ListItemInput wantToPlay = new ListItemInput();
         wantToPlay.setPrompt("Want to continue?");
@@ -59,14 +59,36 @@ public class Game {
                     player.play(this.deck);
                 }
                 for (int i = 0; i < players.size()-1; i++){
-                    checkWinner(players.get(0), players.get(i));
+                    checkWinner(players.get(0), players.get(i+1));
                 }
+                again();
             }else{
                 System.out.println("Thanks for playing!");
                 playing = false;
             }
         }
 
+    }
+    public void again(){
+        if (playAgain()){
+            for (int i = 0; i < players.size()-1; i++){
+                players.get(i).clearHand();
+            }
+            Game g = new Game();
+            g.run();
+        }
+    }
+    public boolean playAgain(){
+        System.out.println("Play again? y/n");
+        String choice = sc.nextLine();
+        if (choice.equalsIgnoreCase("y") || choice.equalsIgnoreCase("yes")){
+            replay = true;
+        }else if (choice.equalsIgnoreCase("n") || choice.equalsIgnoreCase("no")){
+            replay = false;
+        }else{
+            System.out.println("Incorrect input");
+        }
+        return replay;
     }
     public void checkWinner(Player player, Player dealer) {
         if (player.getHandValue() <= 21 && player.getHandValue() > dealer.getHandValue() || dealer.busted() && !player.busted()){
