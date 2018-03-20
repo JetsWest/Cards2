@@ -32,7 +32,11 @@ public class Game {
         NumberInput numComputerPlayers = new NumberInput();
         numComputerPlayers.setPrompt("How many computer players do you want?");
         numComputerPlayers.setNumberType("Integer");
-       
+
+        NumberInput cpuDifficulty = new NumberInput();
+        cpuDifficulty.setPrompt("What level do you want the CPU to be? 1) Easy 2) Hard");
+        cpuDifficulty.setNumberType("Integer");
+
         System.out.println("Welcome to the 21 game!");
         ListItemInput wantToPlay = new ListItemInput();
         wantToPlay.setPrompt("Want to continue?");
@@ -41,13 +45,14 @@ public class Game {
         boolean playing = true;
         numHumanPlayers.run();
         numComputerPlayers.run();
+        cpuDifficulty.run();
         for (int i = 0; i < (int)numHumanPlayers.get(); i++){
             this.players.add(new Player());
             this.players.get(i).takeCard(deck.drawCard());
             this.players.get(i).takeCard(deck.drawCard());
         }
         for (int i = 0; i < (int)numComputerPlayers.get(); i++){
-            this.players.add(new ComputerPlayer(ComputerPlayer.HARD));
+            this.players.add(new ComputerPlayer((int) cpuDifficulty.get()));
             this.players.get(i+(int)numHumanPlayers.get()).takeCard(deck.drawCard());
             this.players.get(i+(int)numHumanPlayers.get()).takeCard(deck.drawCard());
             this.players.get(i + (int) numHumanPlayers.get()).peek();
@@ -65,6 +70,7 @@ public class Game {
             }else{
                 System.out.println("Thanks for playing!");
                 playing = false;
+                System.exit(0);
             }
         }
 
@@ -84,7 +90,8 @@ public class Game {
         if (choice.equalsIgnoreCase("y") || choice.equalsIgnoreCase("yes")){
             replay = true;
         }else if (choice.equalsIgnoreCase("n") || choice.equalsIgnoreCase("no")){
-            replay = false;
+            System.out.println("Bye! Now exiting...");
+            System.exit(0);
         }else{
             System.out.println("Incorrect input");
         }
@@ -97,16 +104,22 @@ public class Game {
             System.out.println("You win!");
             player.win();
             dealer.lose();
+            System.out.println("Wins: " + player.numWins());
+            System.out.println("Losses: " + player.numLosses());
         }else if (dealer.getHandValue() <= 21 && dealer.getHandValue() > player.getHandValue() || player.busted() && !dealer.busted()){
             System.out.println("The CPU's score was " + dealer.getHandValue() + " and your score was " + player.getHandValue());
             System.out.println();
             System.out.println("You lose cpu wins!");
             dealer.win();
             player.lose();
+            System.out.println("Wins: " + player.numWins());
+            System.out.println("Losses: " + player.numLosses());
         }else{
             System.out.println("The CPU's score was " + dealer.getHandValue() + " and your score was " + player.getHandValue());
             System.out.println();
             System.out.println("It is a tie!");
+            System.out.println("Wins: " + player.numWins());
+            System.out.println("Losses: " + player.numLosses());
         }
     }
 
